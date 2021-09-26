@@ -29,11 +29,21 @@ $articlePreview = mb_substr($articleText, 0, $MaxLength);
 //Делим на отдельные слова через пробел
 $array = explode (' ', $articlePreview);
 
+
+//Если 200ым символом будет пробел то в ссылку попадет только два слова
+//в этом случае удаляем последний элемент массива слов который будет являться пустым
+$flag = 0;
+if ($array[count($array)-1] == '') {
+    $flag = -1;
+    $array = array_slice($array, 0, count($array)-1);
+}
+
 //Соединяем последние слова обратно в строчку
 $lastWords = implode(' ', array_slice($array, count($array)- $LastWords, $LastWords));
 
 //Удаляем из обрезанного текста последние слова чтобы присоединить их как ссылку
-$articlePreview = mb_substr($articlePreview, 0, mb_strlen($articlePreview) - mb_strlen($lastWords));
+//Добавляем флаг (пробел который был удален) если 200ый символ был пробелом
+$articlePreview = mb_substr($articlePreview, 0, mb_strlen($articlePreview) - mb_strlen($lastWords) + $flag );
 
 //Соединяем статью с последними словами и добавленным троеточием как ссылку.
 $articlePreview = $articlePreview . "<a href= \"{$articleLink}\">{$lastWords}... </a>";
@@ -42,6 +52,5 @@ echo $articlePreview;
 
 //Одна из основных проблем это кодировка, если на входе будет текст другой 
 //кодировки то всё перестанет работать.
-//Если 200ый символ будет пробелом то в ссылку попадет только два слова.
 
 ?>
